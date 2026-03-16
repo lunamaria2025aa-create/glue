@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mi Jardín Mágico Frondoso</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Jardín Mágico - Glue Song</title>
     <style>
         :root {
             --cielo-dia: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%);
@@ -21,13 +22,12 @@
             transition: background 2s ease;
             background: var(--cielo-dia);
             perspective: 1000px;
+            font-family: sans-serif;
         }
 
-        body.noche {
-            background: var(--cielo-noche);
-        }
+        body.noche { background: var(--cielo-noche); }
 
-        /* --- SOL Y LUNA --- */
+        /* --- ASTRO (SOL/LUNA) --- */
         #astro {
             position: absolute;
             top: 40px;
@@ -39,7 +39,7 @@
             cursor: pointer;
             box-shadow: 0 0 60px rgba(255, 247, 0, 0.6);
             transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 20;
+            z-index: 100;
         }
 
         body.noche #astro {
@@ -48,7 +48,7 @@
             transform: scale(0.9) rotate(-20deg);
         }
 
-        /* --- ARCOÍRIS REALISTA --- */
+        /* --- ARCOÍRIS --- */
         .arcoiris {
             position: absolute;
             bottom: 150px;
@@ -58,245 +58,174 @@
             background: radial-gradient(circle at 50% 100%, 
                 transparent 50%, 
                 rgba(148, 0, 211, 0.2) 53%, 
-                rgba(75, 0, 130, 0.2) 56%, 
                 rgba(0, 0, 255, 0.2) 59%, 
-                rgba(0, 255, 0, 0.2) 62%, 
-                rgba(255, 255, 0, 0.2) 65%, 
-                rgba(255, 127, 0, 0.2) 68%, 
+                rgba(0, 255, 0, 0.2) 65%, 
                 rgba(255, 0, 0, 0.2) 71%,
                 transparent 74%);
             filter: blur(4px);
             z-index: 1;
             transition: opacity 1.5s;
         }
-
         body.noche .arcoiris { opacity: 0; }
 
-        /* --- FLORES CON VOLUMEN --- */
+        /* --- FLORES --- */
+        .jardin {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-bottom: 80px; /* Sobre el suelo */
+            z-index: 10;
+        }
+
         .flor {
             position: relative;
-            margin: 0 15px; /* Menos margen para que quepan más */
-            z-index: 10;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.2));
+            margin: 0 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.2));
         }
 
         .tallo {
-            width: 10px;
+            width: 8px;
             background: linear-gradient(to right, #2ecc71, #27ae60);
             height: 0;
-            border-radius: 5px;
-            animation: crecerTallo 3s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+            border-radius: 4px;
+            animation: crecerTallo 2.5s ease-out forwards;
         }
 
         .cabeza-flor {
-            width: 70px; /* Un poco más pequeñas para que quepan */
-            height: 70px;
+            width: 60px;
+            height: 60px;
             position: relative;
             transform: scale(0);
             animation: florecer 1s ease-out forwards;
-            /* El delay se controlará individualmente en el HTML */
         }
 
         .petalo {
             position: absolute;
-            width: 30px;
-            height: 45px;
-            /* Color base rosa, se sobrescribirá en el HTML */
-            background: radial-gradient(circle, #ff69b4, #c2185b); 
+            width: 25px;
+            height: 40px;
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            left: 20px;
+            left: 17px;
             transform-origin: bottom center;
             transition: box-shadow 1s;
         }
 
-        /* Brillo de las flores en la noche */
-        body.noche .petalo {
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-        }
+        body.noche .petalo { box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
 
         .centro {
-            width: 25px;
-            height: 25px;
+            width: 20px; height: 20px;
             background: radial-gradient(circle, #ffd700, #f39c12);
             border-radius: 50%;
             position: absolute;
-            top: 22px;
-            left: 22px;
+            top: 20px; left: 20px;
             z-index: 5;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
         }
 
-        /* --- LUCIÉRNAGAS --- */
-        .luciernaga {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: #fff;
-            border-radius: 50%;
-            filter: blur(1px);
-            opacity: 0;
-            z-index: 15;
-        }
-
-        body.noche .luciernaga {
-            animation: parpadeo 3s infinite ease-in-out, movimiento 10s infinite alternate linear;
-        }
-
-        @keyframes crecerTallo { to { height: 200px; } }
-        @keyframes florecer { to { transform: scale(1) rotate(10deg); } }
-        @keyframes parpadeo { 0%, 100% { opacity: 0; box-shadow: 0 0 0px #f1c40f; } 50% { opacity: 1; box-shadow: 0 0 15px #f1c40f; background: #f1c40f;} }
-        @keyframes movimiento { from { transform: translate(0,0); } to { transform: translate(100px, -100px); } }
-
-        /* --- AMBIENTE --- */
-        .suelo {
-            position: absolute;
-            bottom: 0; width: 100%; height: 80px;
-            background: var(--tierra); z-index: 12;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.3);
-        }
-
-        .pasto-capa {
-            position: absolute;
-            bottom: 80px; width: 100%; height: 30px;
-            background: var(--pasto); z-index: 11;
-            border-radius: 50% 50% 0 0 / 20px 20px 0 0;
-        }
-
-        /* Estilos rápidos para cambiar colores de pétalos */
+        /* Colores de pétalos */
         .p-rosa { background: radial-gradient(circle, #ff69b4, #c2185b); }
         .p-azul { background: radial-gradient(circle, #4db8ff, #0052cc); }
         .p-purpura { background: radial-gradient(circle, #da70d6, #8e44ad); }
         .p-naranja { background: radial-gradient(circle, #ff9f43, #e67e22); }
 
+        /* --- ANIMACIONES --- */
+        @keyframes crecerTallo { to { height: 180px; } }
+        @keyframes florecer { to { transform: scale(1); } }
+        
+        .luciernaga {
+            position: absolute;
+            width: 5px; height: 5px;
+            background: #f1c40f;
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 50;
+        }
+        body.noche .luciernaga { animation: parpadeo 3s infinite; }
+        @keyframes parpadeo { 0%, 100% { opacity: 0; } 50% { opacity: 1; box-shadow: 0 0 10px #f1c40f; } }
+
+        /* --- SUELO --- */
+        .suelo { position: absolute; bottom: 0; width: 100%; height: 80px; background: var(--tierra); z-index: 20; }
+        .pasto-capa { position: absolute; bottom: 80px; width: 100%; height: 20px; background: var(--pasto); z-index: 15; border-radius: 50% 50% 0 0 / 10px 10px 0 0; }
+
+        #instruccion {
+            position: absolute;
+            top: 20px; left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+            pointer-events: none;
+            transition: opacity 1s;
+        }
     </style>
 </head>
 <body id="cuerpo">
 
+    <div id="instruccion">Toca el Sol para que empiece la magia ✨</div>
     <div id="astro" onclick="cambiarCiclo()"></div>
     <div class="arcoiris"></div>
-
     <div id="contenedor-luciernagas"></div>
 
-    <div class="flor">
-        <div class="cabeza-flor" style="animation-delay: 2.5s;">
-            <div class="petalo p-rosa" style="transform: rotate(0deg)"></div>
-            <div class="petalo p-rosa" style="transform: rotate(72deg)"></div>
-            <div class="petalo p-rosa" style="transform: rotate(144deg)"></div>
-            <div class="petalo p-rosa" style="transform: rotate(216deg)"></div>
-            <div class="petalo p-rosa" style="transform: rotate(288deg)"></div>
-            <div class="centro"></div>
+    <div class="jardin">
         </div>
-        <div class="tallo" style="animation-delay: 0s;"></div>
-    </div>
-
-    <div class="flor">
-        <div class="cabeza-flor" style="animation-delay: 3.3s;">
-            <div class="petalo p-azul" style="transform: rotate(0deg)"></div>
-            <div class="petalo p-azul" style="transform: rotate(72deg)"></div>
-            <div class="petalo p-azul" style="transform: rotate(144deg)"></div>
-            <div class="petalo p-azul" style="transform: rotate(216deg)"></div>
-            <div class="petalo p-azul" style="transform: rotate(288deg)"></div>
-            <div class="centro"></div>
-        </div>
-        <div class="tallo" style="animation-delay: 0.8s;"></div>
-    </div>
-
-    <div class="flor">
-        <div class="cabeza-flor" style="animation-delay: 2.8s;">
-            <div class="petalo p-purpura" style="transform: rotate(0deg)"></div>
-            <div class="petalo p-purpura" style="transform: rotate(72deg)"></div>
-            <div class="petalo p-purpura" style="transform: rotate(144deg)"></div>
-            <div class="petalo p-purpura" style="transform: rotate(216deg)"></div>
-            <div class="petalo p-purpura" style="transform: rotate(288deg)"></div>
-            <div class="centro"></div>
-        </div>
-        <div class="tallo" style="animation-delay: 0.3s;"></div>
-    </div>
-
-    <div class="flor">
-        <div class="cabeza-flor" style="animation-delay: 3.7s;">
-            <div class="petalo p-naranja" style="transform: rotate(0deg)"></div>
-            <div class="petalo p-naranja" style="transform: rotate(72deg)"></div>
-            <div class="petalo p-naranja" style="transform: rotate(144deg)"></div>
-            <div class="petalo p-naranja" style="transform: rotate(216deg)"></div>
-            <div class="petalo p-naranja" style="transform: rotate(288deg)"></div>
-            <div class="centro"></div>
-        </div>
-        <div class="tallo" style="animation-delay: 1.2s;"></div>
-    </div>
-
-    <div class="flor">
-        <div class="cabeza-flor" style="animation-delay: 3s;">
-            <div class="petalo p-rosa" style="transform: rotate(0deg)"></div>
-            <div class="petalo p-rosa" style="transform: rotate(72deg)"></div>
-            <div class="petalo p-rosa" style="transform: rotate(144deg)"></div>
-            <div class="petalo p-rosa" style="transform: rotate(216deg)"></div>
-            <div class="petalo p-rosa" style="transform: rotate(288deg)"></div>
-            <div class="centro"></div>
-        </div>
-        <div class="tallo" style="animation-delay: 0.5s;"></div>
-    </div>
-
-    <div class="flor">
-        <div class="cabeza-flor" style="animation-delay: 4s;">
-            <div class="petalo p-azul" style="transform: rotate(0deg)"></div>
-            <div class="petalo p-azul" style="transform: rotate(72deg)"></div>
-            <div class="petalo p-azul" style="transform: rotate(144deg)"></div>
-            <div class="petalo p-azul" style="transform: rotate(216deg)"></div>
-            <div class="petalo p-azul" style="transform: rotate(288deg)"></div>
-            <div class="centro"></div>
-        </div>
-        <div class="tallo" style="animation-delay: 1.5s;"></div>
-    </div>
-
-    <div class="flor">
-        <div class="cabeza-flor" style="animation-delay: 2.7s;">
-            <div class="petalo p-purpura" style="transform: rotate(0deg)"></div>
-            <div class="petalo p-purpura" style="transform: rotate(72deg)"></div>
-            <div class="petalo p-purpura" style="transform: rotate(144deg)"></div>
-            <div class="petalo p-purpura" style="transform: rotate(216deg)"></div>
-            <div class="petalo p-purpura" style="transform: rotate(288deg)"></div>
-            <div class="centro"></div>
-        </div>
-        <div class="tallo" style="animation-delay: 0.2s;"></div>
-    </div>
-
-    <div class="flor">
-        <div class="cabeza-flor" style="animation-delay: 4.2s;">
-            <div class="petalo p-naranja" style="transform: rotate(0deg)"></div>
-            <div class="petalo p-naranja" style="transform: rotate(72deg)"></div>
-            <div class="petalo p-naranja" style="transform: rotate(144deg)"></div>
-            <div class="petalo p-naranja" style="transform: rotate(216deg)"></div>
-            <div class="petalo p-naranja" style="transform: rotate(288deg)"></div>
-            <div class="centro"></div>
-        </div>
-        <div class="tallo" style="animation-delay: 1.7s;"></div>
-    </div>
 
     <div class="suelo"></div>
     <div class="pasto-capa"></div>
 
-    <iframe id="musica" width="1" height="1" src="https://www.youtube.com/embed/purdUs68Tmc?autoplay=1" frameborder="0" allow="autoplay" style="visibility:hidden; position:absolute; left:-999px;"></iframe>
+    <iframe id="musica" width="1" height="1" 
+        src="https://www.youtube.com/embed/AuAl9_2twoQ?enablejsapi=1&autoplay=1&mute=1" 
+        frameborder="0" style="position:absolute; left:-999px;">
+    </iframe>
 
     <script>
-        // Función para cambiar entre Día y Noche
-        function cambiarCiclo() {
-            document.getElementById('cuerpo').classList.toggle('noche');
+        const jardin = document.querySelector('.jardin');
+        const colores = ['p-rosa', 'p-azul', 'p-purpura', 'p-naranja'];
+
+        // Crear 8 flores
+        for (let i = 0; i < 8; i++) {
+            const flor = document.createElement('div');
+            flor.className = 'flor';
+            const color = colores[i % colores.length];
+            const delay = (i * 0.4).toFixed(1);
+
+            flor.innerHTML = `
+                <div class="cabeza-flower cabeza-flor" style="animation-delay: ${parseFloat(delay) + 2}s">
+                    <div class="petalo ${color}" style="transform: rotate(0deg)"></div>
+                    <div class="petalo ${color}" style="transform: rotate(72deg)"></div>
+                    <div class="petalo ${color}" style="transform: rotate(144deg)"></div>
+                    <div class="petalo ${color}" style="transform: rotate(216deg)"></div>
+                    <div class="petalo ${color}" style="transform: rotate(288deg)"></div>
+                    <div class="centro"></div>
+                </div>
+                <div class="tallo" style="animation-delay: ${delay}s"></div>
+            `;
+            jardin.appendChild(flor);
         }
 
-        // Crear 20 luciérnagas aleatorias en el cielo
-        const contenedor = document.getElementById('contenedor-luciernagas');
+        // Crear luciérnagas
+        const contenedorLuc = document.getElementById('contenedor-luciernagas');
         for (let i = 0; i < 20; i++) {
-            let luc = document.createElement('div');
+            const luc = document.createElement('div');
             luc.className = 'luciernaga';
-            luc.style.left = Math.random() * 100 + 'vw'; // Posición horizontal aleatoria
-            luc.style.top = Math.random() * 65 + 'vh';  // Posición vertical aleatoria
-            luc.style.animationDelay = Math.random() * 5 + 's'; // Retraso de parpadeo aleatorio
-            luc.style.animationDuration = (3 + Math.random() * 4) + 's'; // Velocidad aleatoria
-            contenedor.appendChild(luc);
+            luc.style.left = Math.random() * 100 + 'vw';
+            luc.style.top = Math.random() * 70 + 'vh';
+            luc.style.animationDelay = Math.random() * 5 + 's';
+            contenedorLuc.appendChild(luc);
+        }
+
+        let primeraVez = true;
+
+        function cambiarCiclo() {
+            document.getElementById('cuerpo').classList.toggle('noche');
+            document.getElementById('instruccion').style.opacity = '0';
+
+            // Control de música
+            const iframe = document.getElementById('musica');
+            // Unmute y Play
+            iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+            iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
         }
     </script>
 </body>
