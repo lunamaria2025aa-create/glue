@@ -8,7 +8,7 @@
 body{
   margin:0;
   overflow:hidden;
-  background:#87ceeb;
+  background:linear-gradient(#87ceeb, #a0d8f1); /* cielo día */
   transition:background 2s;
 }
 
@@ -54,7 +54,6 @@ body{
   position:absolute;
   bottom:30%;
   width:8px;
-  height:120px;
   background:green;
 }
 
@@ -69,10 +68,8 @@ body{
 /* pétalos */
 .petal{
   position:absolute;
-  width:26px;
-  height:26px;
   border-radius:50%;
-  background:#c77dff;
+  background:#c77dff; /* lila */
 }
 
 .center{
@@ -84,13 +81,6 @@ body{
   top:18px;
   left:18px;
 }
-
-.p1{top:0;left:20px;}
-.p2{top:20px;left:0;}
-.p3{top:20px;left:40px;}
-.p4{top:40px;left:20px;}
-.p5{top:10px;left:10px;}
-.p6{top:10px;left:30px;}
 
 /* flores cerradas */
 .closed{
@@ -163,37 +153,59 @@ body{
 
 <body>
 
-<audio id="music" src="https://youtu.be/purdUs68Tmc?si=ete22Kilm60O9DVs" autoplay loop></audio>
+<!-- MÚSICA de YouTube -->
+<iframe width="0" height="0" src="https://youtu.be/purdUs68Tmc?si=IuYKtBnyIca9RPGw" allow="autoplay" style="display:none"></iframe>
 
 <div class="ground"></div>
 <div class="rainbow"></div>
 <div id="sun"></div>
 
 <script>
-/* FLORES */
 let flowers=[];
-for(let i=0;i<60;i++){  // reduje el número de flores para que no estén tan juntas
-  let plant=document.createElement("div");
-  plant.className="plant";
-  plant.style.left=(i*1.6)+"%";  // aumenté el espacio entre flores
 
-  let flower=document.createElement("div");
-  flower.className="flower";
+// FLORES EQUILIBRADAS CON PÉTALOS NATURALES
+let columns = 15; 
+for(let i=0;i<columns;i++){
+  let flowersInColumn = 2 + Math.floor(Math.random()*3); // 2-4 flores por columna
+  for(let j=0;j<flowersInColumn;j++){
+    let plant=document.createElement("div");
+    plant.className="plant";
+    plant.style.left=(i*100/columns + Math.random()*(100/columns - 5))+"%";
+    plant.style.height=(80+Math.random()*60)+"px";
 
-  for(let p=1;p<=6;p++){
-    let petal=document.createElement("div");
-    petal.className="petal p"+p;
-    flower.appendChild(petal);
+    let flower=document.createElement("div");
+    flower.className="flower";
+    flower.style.transform="scale("+(0.7+Math.random()*0.5)+")";
+
+    // pétalos naturales
+    for(let p=0;p<6;p++){
+      let petal=document.createElement("div");
+      petal.className="petal";
+
+      let size = 25 + Math.random()*10; 
+      petal.style.width = size+"px";
+      petal.style.height = size+"px";
+
+      let topOffset = 0 + Math.random()*40;
+      let leftOffset = 0 + Math.random()*40;
+      petal.style.top = topOffset + "px";
+      petal.style.left = leftOffset + "px";
+
+      let rotate = Math.random()*360;
+      petal.style.transform = "rotate("+rotate+"deg)";
+
+      flower.appendChild(petal);
+    }
+
+    let center=document.createElement("div");
+    center.className="center";
+    flower.appendChild(center);
+
+    plant.appendChild(flower);
+    document.body.appendChild(plant);
+
+    flowers.push(flower);
   }
-
-  let center=document.createElement("div");
-  center.className="center";
-  flower.appendChild(center);
-
-  plant.appendChild(flower);
-  document.body.appendChild(plant);
-
-  flowers.push(flower);
 }
 
 /* mariposas */
@@ -249,29 +261,28 @@ for(let i=0;i<30;i++){
   fireflies.push(f);
 }
 
-/* SOL / NOCHE */
+/* SOL / LUNA */
 let sun=document.getElementById("sun");
 let night=false;
 let rainbow=document.querySelector(".rainbow");
-let music=document.getElementById("music");
 
 sun.onclick=function(){
   if(!night){
-    document.body.style.background="#0b1a3a";
+    document.body.style.background="linear-gradient(#0b1a3a, #000022)";
     sun.style.background="#ddd";
-    sun.style.boxShadow="0 0 40px #ddd";
+    sun.style.boxShadow="0 0 60px #ddd";
     stars.forEach(s=>s.style.opacity=1);
     fireflies.forEach(f=>f.style.opacity=1);
-    rainbow.style.opacity=0; // arcoiris desaparece
+    rainbow.style.opacity=0;
     flowers.forEach(f=>f.classList.add("closed"));
     night=true;
   }else{
-    document.body.style.background="#87ceeb";
+    document.body.style.background="linear-gradient(#87ceeb, #a0d8f1)";
     sun.style.background="gold";
     sun.style.boxShadow="0 0 70px gold";
     stars.forEach(s=>s.style.opacity=0);
     fireflies.forEach(f=>f.style.opacity=0);
-    rainbow.style.opacity=0.7; // arcoiris reaparece
+    rainbow.style.opacity=0.7;
     flowers.forEach(f=>f.classList.remove("closed"));
     night=false;
   }
