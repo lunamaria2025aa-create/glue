@@ -2,11 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Jardín Mágico de Gemini</title>
+    <title>Jardín Mágico Evolucionado</title>
     <style>
         :root {
-            --cielo-dia: #87CEEB;
-            --cielo-noche: #1a1a2e;
+            --cielo-dia: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%);
+            --cielo-noche: linear-gradient(to bottom, #090919 0%, #16213e 100%);
+            --tierra: #3d1f05;
+            --pasto: #2d5a27;
         }
 
         body {
@@ -16,118 +18,147 @@
             justify-content: center;
             align-items: flex-end;
             overflow: hidden;
-            transition: background-color 2s;
-            background-color: var(--cielo-dia);
-            font-family: sans-serif;
+            transition: background 2s ease;
+            background: var(--cielo-dia);
+            perspective: 1000px;
+        }
+
+        body.noche {
+            background: var(--cielo-noche);
         }
 
         /* --- SOL Y LUNA --- */
         #astro {
             position: absolute;
-            top: 50px;
-            right: 80px;
-            width: 80px;
-            height: 80px;
+            top: 40px;
+            right: 60px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            background: radial-gradient(circle, #fff700, #ff8c00);
+            background: radial-gradient(circle at 30% 30%, #fff700, #ff8c00);
             cursor: pointer;
-            box-shadow: 0 0 50px #fff700;
-            transition: all 2s;
+            box-shadow: 0 0 60px rgba(255, 247, 0, 0.6);
+            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 20;
         }
 
         body.noche #astro {
-            background: radial-gradient(circle, #f0f0f0, #bdc3c7);
-            box-shadow: 0 0 30px #ffffff;
-            transform: translateX(-50px);
+            background: radial-gradient(circle at 30% 30%, #f0f0f0, #7f8c8d);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+            transform: scale(0.9) rotate(-20deg);
         }
 
-        /* --- ARCOÍRIS --- */
+        /* --- ARCOÍRIS REALISTA --- */
         .arcoiris {
             position: absolute;
-            top: 50px;
-            width: 500px;
-            height: 250px;
-            border-radius: 250px 250px 0 0;
-            border: 15px solid transparent;
-            border-top: 15px solid rgba(255, 0, 0, 0.4);
-            box-shadow: 0 -15px 0 rgba(255, 165, 0, 0.4), 
-                        0 -30px 0 rgba(255, 255, 0, 0.4),
-                        0 -45px 0 rgba(0, 128, 0, 0.4),
-                        0 -60px 0 rgba(0, 0, 255, 0.4),
-                        0 -75px 0 rgba(75, 0, 130, 0.4);
+            bottom: 150px;
+            width: 800px;
+            height: 400px;
+            border-radius: 400px 400px 0 0;
+            background: radial-gradient(circle at 50% 100%, 
+                transparent 50%, 
+                rgba(148, 0, 211, 0.2) 53%, 
+                rgba(75, 0, 130, 0.2) 56%, 
+                rgba(0, 0, 255, 0.2) 59%, 
+                rgba(0, 255, 0, 0.2) 62%, 
+                rgba(255, 255, 0, 0.2) 65%, 
+                rgba(255, 127, 0, 0.2) 68%, 
+                rgba(255, 0, 0, 0.2) 71%,
+                transparent 74%);
+            filter: blur(4px);
             z-index: 1;
-            transition: opacity 2s;
+            transition: opacity 1.5s;
         }
 
         body.noche .arcoiris { opacity: 0; }
 
+        /* --- FLORES CON VOLUMEN --- */
+        .flor {
+            position: relative;
+            margin: 0 40px;
+            z-index: 10;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.2));
+        }
+
+        .tallo {
+            width: 12px;
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            height: 0;
+            border-radius: 5px;
+            animation: crecerTallo 3s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+        }
+
+        .cabeza-flor {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            transform: scale(0);
+            animation: florecer 1s 2.5s ease-out forwards;
+        }
+
+        .petalo {
+            position: absolute;
+            width: 35px;
+            height: 50px;
+            background: radial-gradient(circle, #ff69b4, #c2185b);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            left: 22px;
+            transform-origin: bottom center;
+            transition: box-shadow 1s;
+        }
+
+        /* Brillo de las flores en la noche */
+        body.noche .petalo {
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+        }
+
+        .centro {
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #ffd700, #f39c12);
+            border-radius: 50%;
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            z-index: 5;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        }
+
         /* --- LUCIÉRNAGAS --- */
         .luciernaga {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #f1c40f;
+            width: 6px;
+            height: 6px;
+            background: #fff;
             border-radius: 50%;
-            box-shadow: 0 0 10px #f1c40f;
+            filter: blur(1px);
             opacity: 0;
             z-index: 15;
         }
 
         body.noche .luciernaga {
-            animation: volar 5s infinite ease-in-out;
+            animation: parpadeo 3s infinite ease-in-out, movimiento 10s infinite alternate linear;
         }
 
-        @keyframes volar {
-            0%, 100% { transform: translate(0,0); opacity: 0; }
-            50% { transform: translate(50px, -50px); opacity: 1; }
-        }
+        @keyframes crecerTallo { to { height: 220px; } }
+        @keyframes florecer { to { transform: scale(1) rotate(10deg); } }
+        @keyframes parpadeo { 0%, 100% { opacity: 0; box-shadow: 0 0 0px #f1c40f; } 50% { opacity: 1; box-shadow: 0 0 15px #f1c40f; background: #f1c40f;} }
+        @keyframes movimiento { from { transform: translate(0,0); } to { transform: translate(100px, -100px); } }
 
-        /* --- EL JARDÍN (Tu código original mejorado) --- */
+        /* --- AMBIENTE --- */
         .suelo {
             position: absolute;
-            bottom: 0; width: 100%; height: 60px;
-            background: #4d2600; z-index: 12;
+            bottom: 0; width: 100%; height: 80px;
+            background: var(--tierra); z-index: 12;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.3);
         }
 
-        .flor {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0 30px;
-            z-index: 10;
+        .pasto-capa {
+            position: absolute;
+            bottom: 80px; width: 100%; height: 30px;
+            background: var(--pasto); z-index: 11;
+            border-radius: 50% 50% 0 0 / 20px 20px 0 0;
         }
-
-        .tallo {
-            width: 8px;
-            background-color: #2ecc71;
-            height: 0;
-            animation: crecerTallo 3s ease-out forwards;
-        }
-
-        .petalos {
-            width: 60px;
-            height: 60px;
-            background-color: #e91e63;
-            border-radius: 50%;
-            transform: scale(0);
-            animation: florecer 1s 2.5s ease-out forwards;
-            position: relative;
-        }
-
-        .centro {
-            width: 20px; height: 20px;
-            background: #f1c40f;
-            border-radius: 50%;
-            position: absolute; top: 20px; left: 20px;
-        }
-
-        @keyframes crecerTallo { to { height: 180px; } }
-        @keyframes florecer { to { transform: scale(1); } }
-
-        /* Estilo para el reproductor invisible */
-        #musica { position: absolute; left: -9999px; }
 
     </style>
 </head>
@@ -138,29 +169,48 @@
 
     <div id="contenedor-luciernagas"></div>
 
-    <div class="flor"><div class="petalos"><div class="centro"></div></div><div class="tallo"></div></div>
-    <div class="flor"><div class="petalos" style="background: #9b59b6;"><div class="centro"></div></div><div class="tallo" style="animation-delay: 0.5s;"></div></div>
-    <div class="flor"><div class="petalos" style="background: #3498db;"><div class="centro"></div></div><div class="tallo" style="animation-delay: 1s;"></div></div>
+    <div class="flor">
+        <div class="cabeza-flor">
+            <div class="petalo" style="transform: rotate(0deg)"></div>
+            <div class="petalo" style="transform: rotate(72deg)"></div>
+            <div class="petalo" style="transform: rotate(144deg)"></div>
+            <div class="petalo" style="transform: rotate(216deg)"></div>
+            <div class="petalo" style="transform: rotate(288deg)"></div>
+            <div class="centro"></div>
+        </div>
+        <div class="tallo"></div>
+    </div>
+
+    <div class="flor">
+        <div class="cabeza-flor" style="animation-delay: 2.8s;">
+            <div class="petalo" style="transform: rotate(0deg); background: radial-gradient(circle, #4db8ff, #0052cc)"></div>
+            <div class="petalo" style="transform: rotate(72deg); background: radial-gradient(circle, #4db8ff, #0052cc)"></div>
+            <div class="petalo" style="transform: rotate(144deg); background: radial-gradient(circle, #4db8ff, #0052cc)"></div>
+            <div class="petalo" style="transform: rotate(216deg); background: radial-gradient(circle, #4db8ff, #0052cc)"></div>
+            <div class="petalo" style="transform: rotate(288deg); background: radial-gradient(circle, #4db8ff, #0052cc)"></div>
+            <div class="centro"></div>
+        </div>
+        <div class="tallo" style="animation-delay: 0.5s;"></div>
+    </div>
 
     <div class="suelo"></div>
+    <div class="pasto-capa"></div>
 
-    <div id="musica">
-        <iframe width="1" height="1" src="https://www.youtube.com/embed/purdUs68Tmc?autoplay=1" frameborder="0" allow="autoplay"></iframe>
-    </div>
+    <iframe id="musica" width="1" height="1" src="https://www.youtube.com/embed/purdUs68Tmc?autoplay=1" frameborder="0" allow="autoplay" style="visibility:hidden"></iframe>
 
     <script>
         function cambiarCiclo() {
             document.getElementById('cuerpo').classList.toggle('noche');
         }
 
-        // Crear luciérnagas aleatorias
         const contenedor = document.getElementById('contenedor-luciernagas');
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 20; i++) {
             let luc = document.createElement('div');
             luc.className = 'luciernaga';
             luc.style.left = Math.random() * 100 + 'vw';
-            luc.style.top = Math.random() * 80 + 'vh';
+            luc.style.top = Math.random() * 70 + 'vh';
             luc.style.animationDelay = Math.random() * 5 + 's';
+            luc.style.animationDuration = (3 + Math.random() * 4) + 's';
             contenedor.appendChild(luc);
         }
     </script>
