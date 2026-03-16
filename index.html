@@ -5,90 +5,84 @@
 <title>Jardín mágico</title>
 
 <style>
-
 body{
-margin:0;
-overflow:hidden;
-background:#87ceeb;
-transition:background 2s;
+  margin:0;
+  overflow:hidden;
+  background:#87ceeb;
+  transition:background 2s;
 }
 
 /* suelo */
-
 .ground{
-position:absolute;
-bottom:0;
-width:100%;
-height:30%;
-background:#3b2a1a;
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:30%;
+  background:#3b2a1a;
 }
 
 /* sol / luna */
-
 #sun{
-position:absolute;
-top:40px;
-right:80px;
-width:120px;
-height:120px;
-border-radius:50%;
-background:gold;
-box-shadow:0 0 70px gold;
-cursor:pointer;
-transition:all 2s;
+  position:absolute;
+  top:40px;
+  right:80px;
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:gold;
+  box-shadow:0 0 70px gold;
+  cursor:pointer;
+  transition:all 2s;
 }
 
 /* arcoiris */
-
 .rainbow{
-position:absolute;
-bottom:30%;
-left:50%;
-transform:translateX(-50%);
-width:700px;
-height:350px;
-border-radius:350px 350px 0 0;
-background:linear-gradient(red,orange,yellow,green,blue,indigo,violet);
-opacity:0.7;
+  position:absolute;
+  bottom:30%;
+  left:50%;
+  transform:translateX(-50%);
+  width:700px;
+  height:350px;
+  border-radius:350px 350px 0 0;
+  background:linear-gradient(red,orange,yellow,green,blue,indigo,violet);
+  opacity:0.7;
+  transition:opacity 2s;
 }
 
 /* tallos */
-
 .plant{
-position:absolute;
-bottom:30%;
-width:8px;
-height:120px;
-background:green;
+  position:absolute;
+  bottom:30%;
+  width:8px;
+  height:120px;
+  background:green;
 }
 
 /* flores */
-
 .flower{
-position:absolute;
-top:-35px;
-left:-22px;
-transition:transform 1.5s;
+  position:absolute;
+  top:-35px;
+  left:-22px;
+  transition:transform 1.5s;
 }
 
 /* pétalos */
-
 .petal{
-position:absolute;
-width:26px;
-height:26px;
-border-radius:50%;
-background:#c77dff;
+  position:absolute;
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  background:#c77dff;
 }
 
 .center{
-position:absolute;
-width:16px;
-height:16px;
-background:yellow;
-border-radius:50%;
-top:18px;
-left:18px;
+  position:absolute;
+  width:16px;
+  height:16px;
+  background:yellow;
+  border-radius:50%;
+  top:18px;
+  left:18px;
 }
 
 .p1{top:0;left:20px;}
@@ -99,241 +93,189 @@ left:18px;
 .p6{top:10px;left:30px;}
 
 /* flores cerradas */
-
 .closed{
-transform:scale(0.4) rotate(90deg);
+  transform:scale(0.4) rotate(90deg);
 }
 
 /* mariposas */
-
 .butterfly{
-position:absolute;
-font-size:24px;
-animation:fly 18s linear infinite;
+  position:absolute;
+  font-size:24px;
+  animation:fly 18s linear infinite;
 }
 
 @keyframes fly{
-0%{transform:translateX(-100px);}
-100%{transform:translateX(110vw);}
+  0%{transform:translateX(-100px);}
+  100%{transform:translateX(110vw);}
 }
 
 /* abejas */
-
 .bee{
-position:absolute;
-font-size:18px;
-animation:beeFly 12s linear infinite;
+  position:absolute;
+  font-size:18px;
+  animation:beeFly 12s linear infinite;
 }
 
 @keyframes beeFly{
-0%{transform:translateX(-100px);}
-100%{transform:translateX(110vw);}
+  0%{transform:translateX(-100px);}
+  100%{transform:translateX(110vw);}
 }
 
 /* pétalos cayendo */
-
 .petalFall{
-position:absolute;
-font-size:18px;
-animation:fall 12s linear infinite;
+  position:absolute;
+  font-size:18px;
+  animation:fall 12s linear infinite;
 }
 
 @keyframes fall{
-0%{transform:translateY(-50px);}
-100%{transform:translateY(110vh);}
+  0%{transform:translateY(-50px);}
+  100%{transform:translateY(110vh);}
 }
 
 /* estrellas */
-
 .star{
-position:absolute;
-color:white;
-font-size:14px;
-opacity:0;
-transition:opacity 2s;
+  position:absolute;
+  color:white;
+  font-size:14px;
+  opacity:0;
+  transition:opacity 2s;
 }
 
 /* luciérnagas */
-
 .firefly{
-position:absolute;
-width:6px;
-height:6px;
-background:yellow;
-border-radius:50%;
-box-shadow:0 0 10px yellow;
-opacity:0;
-animation:blink 2s infinite alternate;
+  position:absolute;
+  width:6px;
+  height:6px;
+  background:yellow;
+  border-radius:50%;
+  box-shadow:0 0 10px yellow;
+  opacity:0;
+  animation:blink 2s infinite alternate;
 }
 
 @keyframes blink{
-from{opacity:0.2}
-to{opacity:1}
+  from{opacity:0.2}
+  to{opacity:1}
 }
-
 </style>
 </head>
 
 <body>
+
+<audio id="music" src="https://youtu.be/purdUs68Tmc?si=ete22Kilm60O9DVs" autoplay loop></audio>
 
 <div class="ground"></div>
 <div class="rainbow"></div>
 <div id="sun"></div>
 
 <script>
-
 /* FLORES */
-
 let flowers=[];
+for(let i=0;i<60;i++){  // reduje el número de flores para que no estén tan juntas
+  let plant=document.createElement("div");
+  plant.className="plant";
+  plant.style.left=(i*1.6)+"%";  // aumenté el espacio entre flores
 
-for(let i=0;i<90;i++){
+  let flower=document.createElement("div");
+  flower.className="flower";
 
-let plant=document.createElement("div");
-plant.className="plant";
-plant.style.left=(i*1.1)+"%";
+  for(let p=1;p<=6;p++){
+    let petal=document.createElement("div");
+    petal.className="petal p"+p;
+    flower.appendChild(petal);
+  }
 
-let flower=document.createElement("div");
-flower.className="flower";
+  let center=document.createElement("div");
+  center.className="center";
+  flower.appendChild(center);
 
-for(let p=1;p<=6;p++){
+  plant.appendChild(flower);
+  document.body.appendChild(plant);
 
-let petal=document.createElement("div");
-petal.className="petal p"+p;
-
-flower.appendChild(petal);
-
-}
-
-let center=document.createElement("div");
-center.className="center";
-
-flower.appendChild(center);
-plant.appendChild(flower);
-
-document.body.appendChild(plant);
-
-flowers.push(flower);
-
+  flowers.push(flower);
 }
 
 /* mariposas */
-
 for(let i=0;i<6;i++){
-
-let b=document.createElement("div");
-b.className="butterfly";
-b.innerHTML="🦋";
-b.style.top=Math.random()*60+"%";
-b.style.animationDelay=Math.random()*10+"s";
-
-document.body.appendChild(b);
-
+  let b=document.createElement("div");
+  b.className="butterfly";
+  b.innerHTML="🦋";
+  b.style.top=Math.random()*60+"%";
+  b.style.animationDelay=Math.random()*10+"s";
+  document.body.appendChild(b);
 }
 
 /* abejas */
-
 for(let i=0;i<4;i++){
-
-let bee=document.createElement("div");
-bee.className="bee";
-bee.innerHTML="🐝";
-bee.style.top=Math.random()*60+"%";
-bee.style.animationDelay=Math.random()*6+"s";
-
-document.body.appendChild(bee);
-
+  let bee=document.createElement("div");
+  bee.className="bee";
+  bee.innerHTML="🐝";
+  bee.style.top=Math.random()*60+"%";
+  bee.style.animationDelay=Math.random()*6+"s";
+  document.body.appendChild(bee);
 }
 
 /* pétalos cayendo */
-
 for(let i=0;i<20;i++){
-
-let petal=document.createElement("div");
-petal.className="petalFall";
-petal.innerHTML="🌸";
-petal.style.left=Math.random()*100+"%";
-petal.style.animationDelay=Math.random()*10+"s";
-
-document.body.appendChild(petal);
-
+  let petal=document.createElement("div");
+  petal.className="petalFall";
+  petal.innerHTML="🌸";
+  petal.style.left=Math.random()*100+"%";
+  petal.style.animationDelay=Math.random()*10+"s";
+  document.body.appendChild(petal);
 }
 
 /* estrellas */
-
 let stars=[];
-
 for(let i=0;i<80;i++){
-
-let star=document.createElement("div");
-star.className="star";
-star.innerHTML="✦";
-
-star.style.left=Math.random()*100+"%";
-star.style.top=Math.random()*50+"%";
-
-document.body.appendChild(star);
-
-stars.push(star);
-
+  let star=document.createElement("div");
+  star.className="star";
+  star.innerHTML="✦";
+  star.style.left=Math.random()*100+"%";
+  star.style.top=Math.random()*50+"%";
+  document.body.appendChild(star);
+  stars.push(star);
 }
 
 /* luciérnagas */
-
 let fireflies=[];
-
 for(let i=0;i<30;i++){
-
-let f=document.createElement("div");
-f.className="firefly";
-
-f.style.left=Math.random()*100+"%";
-f.style.top=(60+Math.random()*30)+"%";
-
-document.body.appendChild(f);
-
-fireflies.push(f);
-
+  let f=document.createElement("div");
+  f.className="firefly";
+  f.style.left=Math.random()*100+"%";
+  f.style.top=(60+Math.random()*30)+"%";
+  document.body.appendChild(f);
+  fireflies.push(f);
 }
 
 /* SOL / NOCHE */
-
 let sun=document.getElementById("sun");
 let night=false;
+let rainbow=document.querySelector(".rainbow");
+let music=document.getElementById("music");
 
 sun.onclick=function(){
-
-if(!night){
-
-document.body.style.background="#0b1a3a";
-
-sun.style.background="#ddd";
-sun.style.boxShadow="0 0 40px #ddd";
-
-stars.forEach(s=>s.style.opacity=1);
-fireflies.forEach(f=>f.style.opacity=1);
-
-flowers.forEach(f=>f.classList.add("closed"));
-
-night=true;
-
-}else{
-
-document.body.style.background="#87ceeb";
-
-sun.style.background="gold";
-sun.style.boxShadow="0 0 70px gold";
-
-stars.forEach(s=>s.style.opacity=0);
-fireflies.forEach(f=>f.style.opacity=0);
-
-flowers.forEach(f=>f.classList.remove("closed"));
-
-night=false;
-
+  if(!night){
+    document.body.style.background="#0b1a3a";
+    sun.style.background="#ddd";
+    sun.style.boxShadow="0 0 40px #ddd";
+    stars.forEach(s=>s.style.opacity=1);
+    fireflies.forEach(f=>f.style.opacity=1);
+    rainbow.style.opacity=0; // arcoiris desaparece
+    flowers.forEach(f=>f.classList.add("closed"));
+    night=true;
+  }else{
+    document.body.style.background="#87ceeb";
+    sun.style.background="gold";
+    sun.style.boxShadow="0 0 70px gold";
+    stars.forEach(s=>s.style.opacity=0);
+    fireflies.forEach(f=>f.style.opacity=0);
+    rainbow.style.opacity=0.7; // arcoiris reaparece
+    flowers.forEach(f=>f.classList.remove("closed"));
+    night=false;
+  }
 }
-
-}
-
 </script>
 
 </body>
