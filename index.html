@@ -1,70 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Algo para ti</title>
+<title>Jardín mágico</title>
 
 <style>
 
 body{
 margin:0;
-background:black;
-color:white;
-font-family:Arial;
-text-align:center;
 overflow:hidden;
+font-family:Arial;
+animation:sunrise 12s forwards;
 }
 
-#moon{
+/* amanecer */
+
+@keyframes sunrise{
+0%{background:#0b1a3a;}
+50%{background:#ffb6c1;}
+100%{background:#87ceeb;}
+}
+
+/* suelo */
+
+.ground{
 position:absolute;
-top:80px;
-left:50%;
-transform:translateX(-50%);
-width:180px;
-height:180px;
+bottom:0;
+width:100%;
+height:30%;
+background:#4b2e17;
+}
+
+/* plantas */
+
+.plant{
+position:absolute;
+bottom:30%;
+width:6px;
+height:0;
+background:green;
+animation:grow 6s forwards;
+}
+
+@keyframes grow{
+to{
+height:140px;
+}
+}
+
+/* flores */
+
+.flower{
+position:absolute;
+width:24px;
+height:24px;
 border-radius:50%;
-background:#eee;
-box-shadow:0 0 40px white;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:40px;
-color:black;
+opacity:0;
+transform:scale(0);
+animation:bloom 2s forwards;
+animation-delay:6s;
 }
 
-#bunny{
-font-size:60px;
-margin-top:250px;
+@keyframes bloom{
+to{
+opacity:1;
+transform:scale(1.6);
+}
 }
 
-button{
-padding:15px 30px;
-font-size:20px;
-border:none;
-border-radius:10px;
-background:pink;
-cursor:pointer;
-margin-top:20px;
-}
+/* pétalos cayendo */
 
-#acertijos{
-display:none;
-margin-top:20px;
-}
-
-input{
-padding:10px;
+.petal{
+position:absolute;
 font-size:16px;
+animation:fall 10s linear infinite;
 }
 
-#mensaje{
-font-size:40px;
-margin-top:30px;
+@keyframes fall{
+0%{transform:translateY(-50px);}
+100%{transform:translateY(110vh);}
 }
 
-#pregunta{
-display:none;
-margin-top:40px;
+/* mariposas */
+
+.butterfly{
+position:absolute;
+font-size:24px;
+animation:fly 12s linear infinite;
+}
+
+@keyframes fly{
+0%{transform:translateX(-100px);}
+100%{transform:translateX(110vw);}
+}
+
+/* abejas */
+
+.bee{
+position:absolute;
+font-size:18px;
+animation:beeFly 8s linear infinite;
+}
+
+@keyframes beeFly{
+0%{transform:translateX(-100px);}
+100%{transform:translateX(110vw);}
 }
 
 </style>
@@ -72,173 +112,80 @@ margin-top:40px;
 
 <body>
 
-<div id="moon">🌙</div>
+<div class="ground"></div>
 
-<div id="bunny">🐰🎀</div>
+<!-- plantas -->
 
-<h1>Debo decirte algo...</h1>
-
-<button onclick="empezar()">EMPEZAR</button>
-
-<div id="acertijos">
-
-<p>Acertijo 1: ¿Cuánto es 2 + 2?</p>
-<input id="r1">
-<button onclick="check1()">OK</button>
-
-<div id="a2" style="display:none">
-
-<p>Acertijo 2: ¿Color del cielo?</p>
-<input id="r2">
-<button onclick="check2()">OK</button>
-
+<div class="plant" style="left:10%;">
+<div class="flower" style="top:-25px;background:pink;"></div>
 </div>
 
-<div id="a3" style="display:none">
-
-<p>Acertijo 3: ¿Cuántos días tiene una semana?</p>
-<input id="r3">
-<button onclick="check3()">OK</button>
-
+<div class="plant" style="left:25%;">
+<div class="flower" style="top:-25px;background:yellow;"></div>
 </div>
 
+<div class="plant" style="left:40%;">
+<div class="flower" style="top:-25px;background:red;"></div>
 </div>
 
-<div id="mensaje"></div>
-
-<div id="pregunta">
-
-<h2>¿Quieres ser la aya de mi Mitsuki?</h2>
-
-<button onclick="si()">SI</button>
-<button onclick="no()">NO</button>
-
+<div class="plant" style="left:55%;">
+<div class="flower" style="top:-25px;background:purple;"></div>
 </div>
 
-<div id="player" style="display:none"></div>
+<div class="plant" style="left:70%;">
+<div class="flower" style="top:-25px;background:orange;"></div>
+</div>
 
-<script src="https://www.youtube.com/iframe_api"></script>
+<div class="plant" style="left:85%;">
+<div class="flower" style="top:-25px;background:cyan;"></div>
+</div>
+
+<!-- mariposas -->
+
+<div class="butterfly" style="top:20%;">🦋</div>
+<div class="butterfly" style="top:40%;animation-delay:3s;">🦋</div>
+<div class="butterfly" style="top:60%;animation-delay:6s;">🦋</div>
+
+<!-- abejas -->
+
+<div class="bee" style="top:50%;">🐝</div>
+<div class="bee" style="top:30%;animation-delay:4s;">🐝</div>
+
+<!-- pétalos -->
+
+<div class="petal" style="left:20%;">🌸</div>
+<div class="petal" style="left:40%;animation-delay:2s;">🌸</div>
+<div class="petal" style="left:60%;animation-delay:4s;">🌸</div>
+<div class="petal" style="left:80%;animation-delay:6s;">🌸</div>
+
+<!-- reproductor oculto -->
+
+<div id="player" style="position:absolute;left:-9999px;"></div>
 
 <script>
 
-let player
+/* cargar API de youtube */
+
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(tag);
+
+var player;
 
 function onYouTubeIframeAPIReady(){
-player=new YT.Player('player',{
-height:'0',
-width:'0',
-videoId:'Xh6Qh8qkC5Q'
-})
+
+player = new YT.Player('player', {
+height:'1',
+width:'1',
+videoId:'purdUs68Tmc',
+playerVars:{
+'autoplay':1,
+'controls':0,
+'loop':1,
+'playlist':'purdUs68Tmc'
 }
+});
 
-function empezar(){
-
-if(player){player.playVideo()}
-
-document.querySelector("button").style.display="none"
-
-document.getElementById("acertijos").style.display="block"
-
-}
-
-function check1(){
-if(document.getElementById("r1").value==4){
-document.getElementById("a2").style.display="block"
-}
-}
-
-function check2(){
-if(document.getElementById("r2").value.toLowerCase()=="azul"){
-document.getElementById("a3").style.display="block"
-}
-}
-
-function check3(){
-if(document.getElementById("r3").value==7){
-mensaje()
-}
-}
-
-function mensaje(){
-
-let text="me gustas"
-let i=0
-let m=document.getElementById("mensaje")
-
-let intervalo=setInterval(function(){
-
-m.innerHTML+=text[i]
-
-i++
-
-if(i>=text.length){
-clearInterval(intervalo)
-document.getElementById("pregunta").style.display="block"
-}
-
-},300)
-
-}
-
-function firework(){
-
-let f=document.createElement("div")
-f.innerHTML="✨"
-f.style.position="absolute"
-f.style.left=Math.random()*window.innerWidth+"px"
-f.style.top=Math.random()*window.innerHeight+"px"
-f.style.fontSize="30px"
-
-document.body.appendChild(f)
-
-setTimeout(()=>{f.remove()},2000)
-
-}
-
-function corazon(){
-
-let cx=window.innerWidth/2
-let cy=window.innerHeight/2
-
-for(let t=0;t<Math.PI*2;t+=0.1){
-
-let x=16*Math.pow(Math.sin(t),3)
-let y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))
-
-let s=document.createElement("div")
-
-s.innerHTML="✨"
-s.style.position="absolute"
-
-s.style.left=cx+x*15+"px"
-s.style.top=cy+y*15+"px"
-
-s.style.fontSize="25px"
-
-document.body.appendChild(s)
-
-setTimeout(()=>{s.remove()},4000)
-
-}
-
-}
-
-function si(){
-
-document.getElementById("pregunta").style.display="none"
-
-document.getElementById("moon").innerHTML="MANI"
-
-for(let i=0;i<8;i++){
-setTimeout(firework,i*500)
-}
-
-setTimeout(corazon,2000)
-
-}
-
-function no(){
-alert("piénsalo otra vez 🐰")
 }
 
 </script>
