@@ -1,293 +1,168 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Jardín mágico</title>
+    <meta charset="UTF-8">
+    <title>Jardín Mágico de Gemini</title>
+    <style>
+        :root {
+            --cielo-dia: #87CEEB;
+            --cielo-noche: #1a1a2e;
+        }
 
-<style>
-body{
-  margin:0;
-  overflow:hidden;
-  background:linear-gradient(#87ceeb, #a0d8f1); /* cielo día */
-  transition:background 2s;
-}
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            overflow: hidden;
+            transition: background-color 2s;
+            background-color: var(--cielo-dia);
+            font-family: sans-serif;
+        }
 
-/* suelo */
-.ground{
-  position:absolute;
-  bottom:0;
-  width:100%;
-  height:30%;
-  background:#3b2a1a;
-}
+        /* --- SOL Y LUNA --- */
+        #astro {
+            position: absolute;
+            top: 50px;
+            right: 80px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff700, #ff8c00);
+            cursor: pointer;
+            box-shadow: 0 0 50px #fff700;
+            transition: all 2s;
+            z-index: 20;
+        }
 
-/* sol / luna */
-#sun{
-  position:absolute;
-  top:40px;
-  right:80px;
-  width:120px;
-  height:120px;
-  border-radius:50%;
-  background:gold;
-  box-shadow:0 0 70px gold;
-  cursor:pointer;
-  transition:all 2s;
-}
+        body.noche #astro {
+            background: radial-gradient(circle, #f0f0f0, #bdc3c7);
+            box-shadow: 0 0 30px #ffffff;
+            transform: translateX(-50px);
+        }
 
-/* arcoiris */
-.rainbow{
-  position:absolute;
-  bottom:30%;
-  left:50%;
-  transform:translateX(-50%);
-  width:700px;
-  height:350px;
-  border-radius:350px 350px 0 0;
-  background:linear-gradient(red,orange,yellow,green,blue,indigo,violet);
-  opacity:0.7;
-  transition:opacity 2s;
-}
+        /* --- ARCOÍRIS --- */
+        .arcoiris {
+            position: absolute;
+            top: 50px;
+            width: 500px;
+            height: 250px;
+            border-radius: 250px 250px 0 0;
+            border: 15px solid transparent;
+            border-top: 15px solid rgba(255, 0, 0, 0.4);
+            box-shadow: 0 -15px 0 rgba(255, 165, 0, 0.4), 
+                        0 -30px 0 rgba(255, 255, 0, 0.4),
+                        0 -45px 0 rgba(0, 128, 0, 0.4),
+                        0 -60px 0 rgba(0, 0, 255, 0.4),
+                        0 -75px 0 rgba(75, 0, 130, 0.4);
+            z-index: 1;
+            transition: opacity 2s;
+        }
 
-/* tallos */
-.plant{
-  position:absolute;
-  bottom:30%;
-  width:8px;
-  background:green;
-}
+        body.noche .arcoiris { opacity: 0; }
 
-/* flores */
-.flower{
-  position:absolute;
-  top:-35px;
-  left:-22px;
-  transition:transform 1.5s;
-}
+        /* --- LUCIÉRNAGAS --- */
+        .luciernaga {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #f1c40f;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #f1c40f;
+            opacity: 0;
+            z-index: 15;
+        }
 
-/* pétalos */
-.petal{
-  position:absolute;
-  border-radius:50%;
-  background:#c77dff; /* lila */
-}
+        body.noche .luciernaga {
+            animation: volar 5s infinite ease-in-out;
+        }
 
-.center{
-  position:absolute;
-  width:16px;
-  height:16px;
-  background:yellow;
-  border-radius:50%;
-  top:18px;
-  left:18px;
-}
+        @keyframes volar {
+            0%, 100% { transform: translate(0,0); opacity: 0; }
+            50% { transform: translate(50px, -50px); opacity: 1; }
+        }
 
-/* flores cerradas */
-.closed{
-  transform:scale(0.4) rotate(90deg);
-}
+        /* --- EL JARDÍN (Tu código original mejorado) --- */
+        .suelo {
+            position: absolute;
+            bottom: 0; width: 100%; height: 60px;
+            background: #4d2600; z-index: 12;
+        }
 
-/* mariposas */
-.butterfly{
-  position:absolute;
-  font-size:24px;
-  animation:fly 18s linear infinite;
-}
+        .flor {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 30px;
+            z-index: 10;
+        }
 
-@keyframes fly{
-  0%{transform:translateX(-100px);}
-  100%{transform:translateX(110vw);}
-}
+        .tallo {
+            width: 8px;
+            background-color: #2ecc71;
+            height: 0;
+            animation: crecerTallo 3s ease-out forwards;
+        }
 
-/* abejas */
-.bee{
-  position:absolute;
-  font-size:18px;
-  animation:beeFly 12s linear infinite;
-}
+        .petalos {
+            width: 60px;
+            height: 60px;
+            background-color: #e91e63;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: florecer 1s 2.5s ease-out forwards;
+            position: relative;
+        }
 
-@keyframes beeFly{
-  0%{transform:translateX(-100px);}
-  100%{transform:translateX(110vw);}
-}
+        .centro {
+            width: 20px; height: 20px;
+            background: #f1c40f;
+            border-radius: 50%;
+            position: absolute; top: 20px; left: 20px;
+        }
 
-/* pétalos cayendo */
-.petalFall{
-  position:absolute;
-  font-size:18px;
-  animation:fall 12s linear infinite;
-}
+        @keyframes crecerTallo { to { height: 180px; } }
+        @keyframes florecer { to { transform: scale(1); } }
 
-@keyframes fall{
-  0%{transform:translateY(-50px);}
-  100%{transform:translateY(110vh);}
-}
+        /* Estilo para el reproductor invisible */
+        #musica { position: absolute; left: -9999px; }
 
-/* estrellas */
-.star{
-  position:absolute;
-  color:white;
-  font-size:14px;
-  opacity:0;
-  transition:opacity 2s;
-}
-
-/* luciérnagas */
-.firefly{
-  position:absolute;
-  width:6px;
-  height:6px;
-  background:yellow;
-  border-radius:50%;
-  box-shadow:0 0 10px yellow;
-  opacity:0;
-  animation:blink 2s infinite alternate;
-}
-
-@keyframes blink{
-  from{opacity:0.2}
-  to{opacity:1}
-}
-</style>
+    </style>
 </head>
+<body id="cuerpo">
 
-<body>
+    <div id="astro" onclick="cambiarCiclo()"></div>
+    <div class="arcoiris"></div>
 
-<!-- MÚSICA de YouTube -->
-<iframe width="0" height="0" src="https://youtu.be/purdUs68Tmc?si=IuYKtBnyIca9RPGw" allow="autoplay" style="display:none"></iframe>
+    <div id="contenedor-luciernagas"></div>
 
-<div class="ground"></div>
-<div class="rainbow"></div>
-<div id="sun"></div>
+    <div class="flor"><div class="petalos"><div class="centro"></div></div><div class="tallo"></div></div>
+    <div class="flor"><div class="petalos" style="background: #9b59b6;"><div class="centro"></div></div><div class="tallo" style="animation-delay: 0.5s;"></div></div>
+    <div class="flor"><div class="petalos" style="background: #3498db;"><div class="centro"></div></div><div class="tallo" style="animation-delay: 1s;"></div></div>
 
-<script>
-let flowers=[];
+    <div class="suelo"></div>
 
-// FLORES EQUILIBRADAS CON PÉTALOS NATURALES
-let columns = 15; 
-for(let i=0;i<columns;i++){
-  let flowersInColumn = 2 + Math.floor(Math.random()*3); // 2-4 flores por columna
-  for(let j=0;j<flowersInColumn;j++){
-    let plant=document.createElement("div");
-    plant.className="plant";
-    plant.style.left=(i*100/columns + Math.random()*(100/columns - 5))+"%";
-    plant.style.height=(80+Math.random()*60)+"px";
+    <div id="musica">
+        <iframe width="1" height="1" src="https://www.youtube.com/embed/purdUs68Tmc?autoplay=1" frameborder="0" allow="autoplay"></iframe>
+    </div>
 
-    let flower=document.createElement("div");
-    flower.className="flower";
-    flower.style.transform="scale("+(0.7+Math.random()*0.5)+")";
+    <script>
+        function cambiarCiclo() {
+            document.getElementById('cuerpo').classList.toggle('noche');
+        }
 
-    // pétalos naturales
-    for(let p=0;p<6;p++){
-      let petal=document.createElement("div");
-      petal.className="petal";
-
-      let size = 25 + Math.random()*10; 
-      petal.style.width = size+"px";
-      petal.style.height = size+"px";
-
-      let topOffset = 0 + Math.random()*40;
-      let leftOffset = 0 + Math.random()*40;
-      petal.style.top = topOffset + "px";
-      petal.style.left = leftOffset + "px";
-
-      let rotate = Math.random()*360;
-      petal.style.transform = "rotate("+rotate+"deg)";
-
-      flower.appendChild(petal);
-    }
-
-    let center=document.createElement("div");
-    center.className="center";
-    flower.appendChild(center);
-
-    plant.appendChild(flower);
-    document.body.appendChild(plant);
-
-    flowers.push(flower);
-  }
-}
-
-/* mariposas */
-for(let i=0;i<6;i++){
-  let b=document.createElement("div");
-  b.className="butterfly";
-  b.innerHTML="🦋";
-  b.style.top=Math.random()*60+"%";
-  b.style.animationDelay=Math.random()*10+"s";
-  document.body.appendChild(b);
-}
-
-/* abejas */
-for(let i=0;i<4;i++){
-  let bee=document.createElement("div");
-  bee.className="bee";
-  bee.innerHTML="🐝";
-  bee.style.top=Math.random()*60+"%";
-  bee.style.animationDelay=Math.random()*6+"s";
-  document.body.appendChild(bee);
-}
-
-/* pétalos cayendo */
-for(let i=0;i<20;i++){
-  let petal=document.createElement("div");
-  petal.className="petalFall";
-  petal.innerHTML="🌸";
-  petal.style.left=Math.random()*100+"%";
-  petal.style.animationDelay=Math.random()*10+"s";
-  document.body.appendChild(petal);
-}
-
-/* estrellas */
-let stars=[];
-for(let i=0;i<80;i++){
-  let star=document.createElement("div");
-  star.className="star";
-  star.innerHTML="✦";
-  star.style.left=Math.random()*100+"%";
-  star.style.top=Math.random()*50+"%";
-  document.body.appendChild(star);
-  stars.push(star);
-}
-
-/* luciérnagas */
-let fireflies=[];
-for(let i=0;i<30;i++){
-  let f=document.createElement("div");
-  f.className="firefly";
-  f.style.left=Math.random()*100+"%";
-  f.style.top=(60+Math.random()*30)+"%";
-  document.body.appendChild(f);
-  fireflies.push(f);
-}
-
-/* SOL / LUNA */
-let sun=document.getElementById("sun");
-let night=false;
-let rainbow=document.querySelector(".rainbow");
-
-sun.onclick=function(){
-  if(!night){
-    document.body.style.background="linear-gradient(#0b1a3a, #000022)";
-    sun.style.background="#ddd";
-    sun.style.boxShadow="0 0 60px #ddd";
-    stars.forEach(s=>s.style.opacity=1);
-    fireflies.forEach(f=>f.style.opacity=1);
-    rainbow.style.opacity=0;
-    flowers.forEach(f=>f.classList.add("closed"));
-    night=true;
-  }else{
-    document.body.style.background="linear-gradient(#87ceeb, #a0d8f1)";
-    sun.style.background="gold";
-    sun.style.boxShadow="0 0 70px gold";
-    stars.forEach(s=>s.style.opacity=0);
-    fireflies.forEach(f=>f.style.opacity=0);
-    rainbow.style.opacity=0.7;
-    flowers.forEach(f=>f.classList.remove("closed"));
-    night=false;
-  }
-}
-</script>
-
+        // Crear luciérnagas aleatorias
+        const contenedor = document.getElementById('contenedor-luciernagas');
+        for (let i = 0; i < 15; i++) {
+            let luc = document.createElement('div');
+            luc.className = 'luciernaga';
+            luc.style.left = Math.random() * 100 + 'vw';
+            luc.style.top = Math.random() * 80 + 'vh';
+            luc.style.animationDelay = Math.random() * 5 + 's';
+            contenedor.appendChild(luc);
+        }
+    </script>
 </body>
 </html>
