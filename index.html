@@ -2,64 +2,239 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Jardín con Glue Song</title>
+    <title>Jardín de Luces y Música</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; transition: background-color 2s; }
-        body { background-color: #87CEEB; }
-        body.noche { background-color: #191970; }
-
-        /* El Sol/Luna */
-        #astro {
-            position: absolute; top: 50px; right: 50px; width: 80px; height: 80px;
-            border-radius: 50%; cursor: pointer; transition: all 1s; z-index: 10;
+        /* --- ESTILOS GENERALES Y DÍA/NOCHE --- */
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%;
+            overflow: hidden; /* Para que no salgan barras de desplazamiento */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 2s ease; /* Transición suave del color del cielo */
         }
-        .sol { background-color: #FFD700; box-shadow: 0 0 20px yellow; }
-        .luna { background-color: #F0F8FF; box-shadow: 0 0 20px white; }
+
+        /* Estado por defecto: DÍA */
+        body {
+            background-color: #87CEEB; /* Azul cielo */
+        }
+
+        /* Estado: NOCHE */
+        body.noche {
+            background-color: #191970; /* Azul medianoche */
+        }
+
+        /* --- ARCOÍRIS (Día) --- */
+        #arcoiris {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 200px;
+            border-radius: 200px 200px 0 0;
+            background: linear-gradient(0deg,
+                rgba(255, 0, 0, 0.8), rgba(255, 127, 0, 0.8),
+                rgba(255, 255, 0, 0.8), rgba(0, 255, 0, 0.8),
+                rgba(0, 0, 255, 0.8), rgba(75, 0, 130, 0.8),
+                rgba(148, 0, 211, 0.8));
+            opacity: 0; /* Oculto por defecto */
+            transition: opacity 2s ease;
+            z-index: 5;
+        }
+
+        /* Mostrar arcoíris en el día */
+        body:not(.noche) #arcoiris {
+            opacity: 1;
+        }
+
+        /* --- EL SOL / LA LUNA --- */
+        #astro {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 1s ease;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+            z-index: 10;
+        }
+
+        /* Estilo SOL (Día) */
+        #astro.sol {
+            background-color: #FFD700;
+            border: 2px solid #FFA500;
+        }
+
+        /* Estilo LUNA (Noche) */
+        #astro.luna {
+            background-color: #F0F8FF;
+            border: 2px solid #DCDCDC;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* --- EL JARDÍN (Suelo, Flores y Luciérnagas) --- */
+        #jardin {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 150px;
+            background-color: #228B22; /* Verde bosque */
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 20px;
+        }
+
+        /* Contenedor de flores */
+        #flores {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            width: 100%;
+        }
+
+        /* Estilo general de la flor */
+        .flor {
+            width: 50px;
+            margin: 0 10px;
+            position: relative;
+        }
+
+        /* El tallo */
+        .tallo {
+            width: 4px;
+            background-color: #006400; /* Verde oscuro */
+            position: absolute;
+            bottom: 0;
+            left: 23px;
+        }
+
+        /* El centro de la flor */
+        .centro {
+            width: 15px;
+            height: 15px;
+            background-color: #8B4513; /* Marrón */
+            border-radius: 50%;
+            position: absolute;
+            z-index: 2;
+        }
+
+        /* Los pétalos */
+        .petalo {
+            width: 20px;
+            height: 25px;
+            border-radius: 50%;
+            position: absolute;
+            transform-origin: bottom center; /* Origen de la rotación */
+            transition: transform 1s ease, background-color 1s ease; /* Animación de cierre */
+        }
+
+        /* Posiciones de los pétalos abiertos (Día) */
+        .p1 { transform: rotate(0deg); }
+        .p2 { transform: rotate(72deg); }
+        .p3 { transform: rotate(144deg); }
+        .p4 { transform: rotate(216deg); }
+        .p5 { transform: rotate(288deg); }
+
+        /* --- ESTILOS DE NOCHE PARA LAS FLORES --- */
+        body.noche .petalo {
+            transform: rotate(0deg) scaleY(0.6); /* Se juntan y se encogen */
+        }
+
+        /* --- LUCIÉRNAGAS (Noche) --- */
+        #luciernagas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* No interfieren con los clics */
+            opacity: 0; /* Ocultas por defecto */
+            transition: opacity 2s ease;
+        }
+
+        body.noche #luciernagas {
+            opacity: 1; /* Mostrar luciérnagas en la noche */
+        }
+
+        .luciernaga {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: #FFFFE0; /* Amarillo claro */
+            border-radius: 50%;
+            animation: parpadeo 3s infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+        }
+
+        @keyframes parpadeo {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
 
         /* Contenedor del video (oculto) */
         #contenedor-musica { position: absolute; top: -500px; left: -500px; }
-
-        /* Jardín y Flores */
-        #jardin {
-            position: absolute; bottom: 0; width: 100%; height: 150px;
-            background-color: #228B22; display: flex; justify-content: center; align-items: flex-end;
-        }
-        .flor { width: 50px; height: 80px; margin: 0 20px; position: relative; }
-        .tallo { width: 4px; height: 50px; background-color: #006400; position: absolute; bottom: 0; left: 23px; }
-        .centro { width: 15px; height: 15px; background-color: #8B4513; border-radius: 50%; position: absolute; bottom: 50px; left: 17px; z-index: 2; }
-        .petalo {
-            width: 20px; height: 25px; background-color: #FFB6C1; border-radius: 50%;
-            position: absolute; bottom: 55px; left: 15px; transform-origin: bottom center; transition: transform 1s;
-        }
-        /* Pétalos abiertos */
-        .p1 { transform: rotate(0deg); } .p2 { transform: rotate(72deg); }
-        .p3 { transform: rotate(144deg); } .p4 { transform: rotate(216deg); }
-        .p5 { transform: rotate(288deg); }
-
-        /* Flores cerradas en la noche */
-        body.noche .petalo { transform: rotate(0deg) scaleY(0.6); background-color: #DB7093; }
     </style>
 </head>
 <body>
 
-    <div id="astro" class="sol" onclick="alternar()"></div>
+    <div id="astro" class="sol" onclick="alternarDiaNoche()"></div>
+
+    <div id="arcoiris"></div>
 
     <div id="contenedor-musica">
         <div id="player"></div>
     </div>
 
     <div id="jardin">
-        <div class="flor">
-            <div class="tallo"></div><div class="centro"></div>
-            <div class="petalo p1"></div><div class="petalo p2"></div>
-            <div class="petalo p3"></div><div class="petalo p4"></div>
-            <div class="petalo p5"></div>
+        <div id="flores">
+            <div class="flor" style="height: 100px;">
+                <div class="tallo" style="height: 70px;"></div>
+                <div class="centro" style="bottom: 70px; left: 17px;"></div>
+                <div class="petalo p1" style="background-color: #FFB6C1; bottom: 75px; left: 15px;"></div>
+                <div class="petalo p2" style="background-color: #FFB6C1; bottom: 75px; left: 15px;"></div>
+                <div class="petalo p3" style="background-color: #FFB6C1; bottom: 75px; left: 15px;"></div>
+                <div class="petalo p4" style="background-color: #FFB6C1; bottom: 75px; left: 15px;"></div>
+                <div class="petalo p5" style="background-color: #FFB6C1; bottom: 75px; left: 15px;"></div>
+            </div>
+            <div class="flor" style="height: 80px; margin: 0 5px;">
+                <div class="tallo" style="height: 50px;"></div>
+                <div class="centro" style="bottom: 50px; left: 17px;"></div>
+                <div class="petalo p1" style="background-color: #9370DB; bottom: 55px; left: 15px;"></div>
+                <div class="petalo p2" style="background-color: #9370DB; bottom: 55px; left: 15px;"></div>
+                <div class="petalo p3" style="background-color: #9370DB; bottom: 55px; left: 15px;"></div>
+                <div class="petalo p4" style="background-color: #9370DB; bottom: 55px; left: 15px;"></div>
+                <div class="petalo p5" style="background-color: #9370DB; bottom: 55px; left: 15px;"></div>
+            </div>
+             <div class="flor" style="height: 90px;">
+                <div class="tallo" style="height: 60px;"></div>
+                <div class="centro" style="bottom: 60px; left: 17px;"></div>
+                <div class="petalo p1" style="background-color: #FFDAB9; bottom: 65px; left: 15px;"></div>
+                <div class="petalo p2" style="background-color: #FFDAB9; bottom: 65px; left: 15px;"></div>
+                <div class="petalo p3" style="background-color: #FFDAB9; bottom: 65px; left: 15px;"></div>
+                <div class="petalo p4" style="background-color: #FFDAB9; bottom: 65px; left: 15px;"></div>
+                <div class="petalo p5" style="background-color: #FFDAB9; bottom: 65px; left: 15px;"></div>
+            </div>
+             <div class="flor" style="height: 110px;">
+                <div class="tallo" style="height: 80px;"></div>
+                <div class="centro" style="bottom: 80px; left: 17px;"></div>
+                <div class="petalo p1" style="background-color: #98FB98; bottom: 85px; left: 15px;"></div>
+                <div class="petalo p2" style="background-color: #98FB98; bottom: 85px; left: 15px;"></div>
+                <div class="petalo p3" style="background-color: #98FB98; bottom: 85px; left: 15px;"></div>
+                <div class="petalo p4" style="background-color: #98FB98; bottom: 85px; left: 15px;"></div>
+                <div class="petalo p5" style="background-color: #98FB98; bottom: 85px; left: 15px;"></div>
+            </div>
         </div>
-        <div class="flor">
-            <div class="tallo"></div><div class="centro"></div>
-            <div class="petalo p1"></div><div class="petalo p2"></div>
-            <div class="petalo p3"></div><div class="petalo p4"></div>
-            <div class="petalo p5"></div>
+
+        <div id="luciernagas">
+            <div class="luciernaga" style="top: -20px; left: 30px; animation-delay: 0.5s;"></div>
+            <div class="luciernaga" style="top: -40px; left: 80px; animation-delay: 1s;"></div>
+            <div class="luciernaga" style="top: -10px; left: 130px; animation-delay: 1.5s;"></div>
+            <div class="luciernaga" style="top: -30px; left: 180px; animation-delay: 0s;"></div>
+            <div class="luciernaga" style="top: -50px; left: 230px; animation-delay: 2s;"></div>
+            <div class="luciernaga" style="top: -20px; left: 280px; animation-delay: 0.8s;"></div>
         </div>
     </div>
 
@@ -86,21 +261,26 @@
             // El reproductor está listo
         }
 
-        function alternar() {
+        function alternarDiaNoche() {
             const body = document.body;
             const astro = document.getElementById('astro');
-            
+            const musica = document.getElementById('musicaJardin');
+
             // Reproducir música al tocar el sol por primera vez
             if (player && player.getPlayerState() !== 1) {
                 player.playVideo();
             }
 
             if (body.classList.contains('noche')) {
+                // Si es noche, cambiamos a DÍA
                 body.classList.remove('noche');
-                astro.classList.replace('luna', 'sol');
+                astro.classList.remove('luna');
+                astro.classList.add('sol');
             } else {
+                // Si es día, cambiamos a NOCHE
                 body.classList.add('noche');
-                astro.classList.replace('sol', 'luna');
+                astro.classList.remove('sol');
+                astro.classList.add('luna');
             }
         }
     </script>
