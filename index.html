@@ -2,241 +2,125 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Jardín de Luces y Música</title>
+    <title>Mi Gran Jardín Silvestre con Arcoíris</title>
     <style>
         /* --- ESTILOS GENERALES Y DÍA/NOCHE --- */
-        body, html {
-            margin: 0; padding: 0;
-            height: 100%;
-            overflow: hidden; /* Para que no salgan barras de desplazamiento */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: background-color 2s ease; /* Transición suave del color del cielo */
-        }
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; transition: background-color 2s ease; }
+        body { background-color: #A7DBF5; /* Azul cielo suave */ }
+        body.noche { background-color: #19194D; /* Azul medianoche */ }
 
-        /* Estado por defecto: DÍA */
-        body {
-            background-color: #87CEEB; /* Azul cielo */
+        /* --- CIELO: NUBES --- */
+        #nubes {
+            position: absolute; top: 0; left: 0; width: 100%; height: 50%; opacity: 1; transition: opacity 2s ease;
         }
+        body.noche #nubes { opacity: 0; } /* Ocultar nubes de noche */
+        .nube { position: absolute; background-color: rgba(255, 255, 255, 0.7); border-radius: 50px; }
+        
+        /* Definición de las nubes */
+        #nube1 { width: 150px; height: 60px; top: 80px; left: 15%; }
+        #nube2 { width: 200px; height: 80px; top: 50px; left: 40%; }
+        #nube3 { width: 120px; height: 50px; top: 120px; left: 70%; }
+        #nube4 { width: 180px; height: 70px; top: 90px; left: 85%; }
 
-        /* Estado: NOCHE */
-        body.noche {
-            background-color: #191970; /* Azul medianoche */
-        }
-
-        /* --- ARCOÍRIS (Día) --- */
+        /* --- ARCOÍRIS DEFINIDO (Día) --- */
         #arcoiris {
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
-            height: 200px;
-            border-radius: 200px 200px 0 0;
-            background: linear-gradient(0deg,
-                rgba(255, 0, 0, 0.8), rgba(255, 127, 0, 0.8),
-                rgba(255, 255, 0, 0.8), rgba(0, 255, 0, 0.8),
-                rgba(0, 0, 255, 0.8), rgba(75, 0, 130, 0.8),
-                rgba(148, 0, 211, 0.8));
-            opacity: 0; /* Oculto por defecto */
-            transition: opacity 2s ease;
-            z-index: 5;
+            position: absolute; top: 25%; left: 50%; transform: translate(-50%, -50%);
+            width: 500px; height: 250px; opacity: 0; transition: opacity 2s ease; z-index: 5;
         }
+        body:not(.noche) #arcoiris { opacity: 1; } /* Mostrar arcoíris en el día */
 
-        /* Mostrar arcoíris en el día */
-        body:not(.noche) #arcoiris {
-            opacity: 1;
-        }
+        /* Bandas del arcoíris */
+        .banda-arco { position: absolute; border-radius: 500px 500px 0 0; bottom: 0; }
+        
+        /* Estilos de cada banda de color */
+        #arco-rojo   { width: 100%; height: 100%; background: #FF3B3F; bottom: 0; }
+        #arco-naranja{ width: 92%;  height: 92%;  background: #FF9F1C; left: 4%;  bottom: 0; }
+        #arco-amarilo{ width: 84%;  height: 84%;  background: #FFD300; left: 8%;  bottom: 0; }
+        #arco-verde  { width: 76%;  height: 76%;  background: #2DCE89; left: 12%; bottom: 0; }
+        #arco-azul   { width: 68%;  height: 68%;  background: #2574F1; left: 16%; bottom: 0; }
+        #arco-anil   { width: 60%;  height: 60%;  background: #733EFE; left: 20%; bottom: 0; }
+        #arco-violeta{ width: 52%;  height: 52%;  background: #B15BFF; left: 24%; bottom: 0; }
+        
+        /* Recorte para que no se vea el fondo */
+        #corte { width: 44%; height: 44%; background-color: #A7DBF5; left: 28%; bottom: 0; border-radius: 500px 500px 0 0; position: absolute; z-index: 6;}
+        body.noche #corte { background-color: #19194D; }
 
         /* --- EL SOL / LA LUNA --- */
         #astro {
-            position: absolute;
-            top: 50px;
-            right: 50px;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 1s ease;
-            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
-            z-index: 10;
+            position: absolute; top: 50px; right: 50px; width: 80px; height: 80px;
+            border-radius: 50%; cursor: pointer; transition: all 1s ease; box-shadow: 0 0 30px rgba(255, 255, 0, 0.6); z-index: 20;
         }
+        #astro.sol { background-color: #FFD700; border: 3px solid #FFA500; }
+        #astro.luna { background-color: #E6E6FA; border: 3px solid #DCDCDC; box-shadow: 0 0 30px rgba(255, 255, 255, 0.5); }
 
-        /* Estilo SOL (Día) */
-        #astro.sol {
-            background-color: #FFD700;
-            border: 2px solid #FFA500;
-        }
-
-        /* Estilo LUNA (Noche) */
-        #astro.luna {
-            background-color: #F0F8FF;
-            border: 2px solid #DCDCDC;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-        }
-
-        /* --- EL JARDÍN (Suelo, Flores y Luciérnagas) --- */
+        /* --- EL JARDÍN --- */
         #jardin {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 150px;
-            background-color: #228B22; /* Verde bosque */
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            padding-bottom: 20px;
+            position: absolute; bottom: 0; width: 100%; height: 180px;
+            background: linear-gradient(#329932, #228B22);
         }
 
-        /* Contenedor de flores */
-        #flores {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            width: 100%;
-        }
-
-        /* Estilo general de la flor */
-        .flor {
-            width: 50px;
-            margin: 0 10px;
-            position: relative;
-        }
-
-        /* El tallo */
-        .tallo {
-            width: 4px;
-            background-color: #006400; /* Verde oscuro */
-            position: absolute;
-            bottom: 0;
-            left: 23px;
-        }
-
-        /* El centro de la flor */
-        .centro {
-            width: 15px;
-            height: 15px;
-            background-color: #8B4513; /* Marrón */
-            border-radius: 50%;
-            position: absolute;
-            z-index: 2;
-        }
-
-        /* Los pétalos */
+        /* --- FLORES (Muchas y Variadas) --- */
+        .flor { position: absolute; bottom: 0; transform-origin: bottom center; }
+        .tallo { width: 3px; background-color: #006400; position: absolute; bottom: 0; left: 23px; }
+        .centro { width: 12px; height: 12px; background-color: #A52A2A; border-radius: 50%; position: absolute; z-index: 2; }
         .petalo {
-            width: 20px;
-            height: 25px;
-            border-radius: 50%;
-            position: absolute;
-            transform-origin: bottom center; /* Origen de la rotación */
-            transition: transform 1s ease, background-color 1s ease; /* Animación de cierre */
+            width: 16px; height: 22px; border-radius: 50%;
+            position: absolute; transform-origin: bottom center; transition: transform 1s ease, background-color 1s ease;
         }
-
-        /* Posiciones de los pétalos abiertos (Día) */
-        .p1 { transform: rotate(0deg); }
-        .p2 { transform: rotate(72deg); }
-        .p3 { transform: rotate(144deg); }
-        .p4 { transform: rotate(216deg); }
+        
+        /* Pétalos abiertos */
+        .p1 { transform: rotate(0deg); } .p2 { transform: rotate(72deg); }
+        .p3 { transform: rotate(144deg); } .p4 { transform: rotate(216deg); }
         .p5 { transform: rotate(288deg); }
 
-        /* --- ESTILOS DE NOCHE PARA LAS FLORES --- */
-        body.noche .petalo {
-            transform: rotate(0deg) scaleY(0.6); /* Se juntan y se encogen */
-        }
+        /* Flores cerradas en la noche */
+        body.noche .petalo { transform: rotate(0deg) scaleY(0.6); opacity: 0.8;}
 
         /* --- LUCIÉRNAGAS (Noche) --- */
         #luciernagas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none; /* No interfieren con los clics */
-            opacity: 0; /* Ocultas por defecto */
-            transition: opacity 2s ease;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity 2s ease;
         }
-
-        body.noche #luciernagas {
-            opacity: 1; /* Mostrar luciérnagas en la noche */
-        }
-
+        body.noche #luciernagas { opacity: 1; }
         .luciernaga {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background-color: #FFFFE0; /* Amarillo claro */
-            border-radius: 50%;
-            animation: parpadeo 3s infinite;
-            box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+            position: absolute; width: 5px; height: 5px; background-color: #FFFF99; border-radius: 50%;
+            animation: parpadeo 3s infinite; box-shadow: 0 0 15px rgba(255, 255, 0, 0.8);
         }
-
-        @keyframes parpadeo {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
-        }
+        @keyframes parpadeo { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
 
         /* Contenedor del video (oculto) */
         #contenedor-musica { position: absolute; top: -500px; left: -500px; }
     </style>
 </head>
-<body>
+<body onload="generarFloresYLuciernagas()">
 
     <div id="astro" class="sol" onclick="alternarDiaNoche()"></div>
 
-    <div id="arcoiris"></div>
+    <div id="arcoiris">
+        <div id="arco-rojo"    class="banda-arco"></div>
+        <div id="arco-naranja" class="banda-arco"></div>
+        <div id="arco-amarilo" class="banda-arco"></div>
+        <div id="arco-verde"   class="banda-arco"></div>
+        <div id="arco-azul"    class="banda-arco"></div>
+        <div id="arco-anil"    class="banda-arco"></div>
+        <div id="arco-violeta" class="banda-arco"></div>
+        <div id="corte"></div>
+    </div>
+
+    <div id="nubes">
+        <div id="nube1" class="nube"></div>
+        <div id="nube2" class="nube"></div>
+        <div id="nube3" class="nube"></div>
+        <div id="nube4" class="nube"></div>
+    </div>
 
     <div id="contenedor-musica">
         <div id="player"></div>
     </div>
 
     <div id="jardin">
-        <div id="flores">
-            <div class="flor" style="height: 100px;">
-                <div class="tallo" style="height: 70px;"></div>
-                <div class="centro" style="bottom: 70px; left: 17px;"></div>
-                <div class="petalo p1" style="background-color: #FFB6C1; bottom: 75px; left: 15px;"></div>
-                <div class="petalo p2" style="background-color: #FFB6C1; bottom: 75px; left: 15px;"></div>
-                <div class="petalo p3" style="background-color: #FFB6C1; bottom: 75px; left: 15px;"></div>
-                <div class="petalo p4" style="background-color: #FFB6C1; bottom: 75px; left: 15px;"></div>
-                <div class="petalo p5" style="background-color: #FFB6C1; bottom: 75px; left: 15px;"></div>
-            </div>
-            <div class="flor" style="height: 80px; margin: 0 5px;">
-                <div class="tallo" style="height: 50px;"></div>
-                <div class="centro" style="bottom: 50px; left: 17px;"></div>
-                <div class="petalo p1" style="background-color: #9370DB; bottom: 55px; left: 15px;"></div>
-                <div class="petalo p2" style="background-color: #9370DB; bottom: 55px; left: 15px;"></div>
-                <div class="petalo p3" style="background-color: #9370DB; bottom: 55px; left: 15px;"></div>
-                <div class="petalo p4" style="background-color: #9370DB; bottom: 55px; left: 15px;"></div>
-                <div class="petalo p5" style="background-color: #9370DB; bottom: 55px; left: 15px;"></div>
-            </div>
-             <div class="flor" style="height: 90px;">
-                <div class="tallo" style="height: 60px;"></div>
-                <div class="centro" style="bottom: 60px; left: 17px;"></div>
-                <div class="petalo p1" style="background-color: #FFDAB9; bottom: 65px; left: 15px;"></div>
-                <div class="petalo p2" style="background-color: #FFDAB9; bottom: 65px; left: 15px;"></div>
-                <div class="petalo p3" style="background-color: #FFDAB9; bottom: 65px; left: 15px;"></div>
-                <div class="petalo p4" style="background-color: #FFDAB9; bottom: 65px; left: 15px;"></div>
-                <div class="petalo p5" style="background-color: #FFDAB9; bottom: 65px; left: 15px;"></div>
-            </div>
-             <div class="flor" style="height: 110px;">
-                <div class="tallo" style="height: 80px;"></div>
-                <div class="centro" style="bottom: 80px; left: 17px;"></div>
-                <div class="petalo p1" style="background-color: #98FB98; bottom: 85px; left: 15px;"></div>
-                <div class="petalo p2" style="background-color: #98FB98; bottom: 85px; left: 15px;"></div>
-                <div class="petalo p3" style="background-color: #98FB98; bottom: 85px; left: 15px;"></div>
-                <div class="petalo p4" style="background-color: #98FB98; bottom: 85px; left: 15px;"></div>
-                <div class="petalo p5" style="background-color: #98FB98; bottom: 85px; left: 15px;"></div>
-            </div>
         </div>
-
-        <div id="luciernagas">
-            <div class="luciernaga" style="top: -20px; left: 30px; animation-delay: 0.5s;"></div>
-            <div class="luciernaga" style="top: -40px; left: 80px; animation-delay: 1s;"></div>
-            <div class="luciernaga" style="top: -10px; left: 130px; animation-delay: 1.5s;"></div>
-            <div class="luciernaga" style="top: -30px; left: 180px; animation-delay: 0s;"></div>
-            <div class="luciernaga" style="top: -50px; left: 230px; animation-delay: 2s;"></div>
-            <div class="luciernaga" style="top: -20px; left: 280px; animation-delay: 0.8s;"></div>
-        </div>
-    </div>
+    
+    <div id="luciernagas"></div>
 
     <script>
         // 1. Cargar la API de YouTube
@@ -248,39 +132,80 @@
         var player;
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
-                height: '0',
-                width: '0',
-                videoId: 'AuAl9_2twoQ', // El ID de tu video
-                events: {
-                    'onReady': onPlayerReady
-                }
+                height: '0', width: '0',
+                videoId: 'AuAl9_2twoQ',
+                events: { 'onReady': onPlayerReady }
             });
         }
-
-        function onPlayerReady(event) {
-            // El reproductor está listo
-        }
+        function onPlayerReady(event) { }
 
         function alternarDiaNoche() {
             const body = document.body;
             const astro = document.getElementById('astro');
-            const musica = document.getElementById('musicaJardin');
-
-            // Reproducir música al tocar el sol por primera vez
+            
             if (player && player.getPlayerState() !== 1) {
                 player.playVideo();
             }
 
             if (body.classList.contains('noche')) {
-                // Si es noche, cambiamos a DÍA
                 body.classList.remove('noche');
-                astro.classList.remove('luna');
-                astro.classList.add('sol');
+                astro.classList.replace('luna', 'sol');
             } else {
-                // Si es día, cambiamos a NOCHE
                 body.classList.add('noche');
-                astro.classList.remove('sol');
-                astro.classList.add('luna');
+                astro.classList.replace('sol', 'luna');
+            }
+        }
+
+        // Función para generar flores y luciérnagas aleatorias
+        function generarFloresYLuciernagas() {
+            const jardin = document.getElementById('jardin');
+            const luciernagas = document.getElementById('luciernagas');
+            const coloresPetalos = ['#FFD1DC', '#FFC0CB', '#9370DB', '#FFF8DC', '#E6E6FA', '#FFFAFA', '#FFEBCD'];
+            const numFlores = 120; // ¡Muchas flores!
+            const numLuciernagas = 50;
+
+            for (let i = 0; i < numFlores; i++) {
+                // Configuración aleatoria de la flor
+                const alturaFlor = Math.floor(Math.random() * 80) + 60; // 60 a 140px
+                const alturaTallo = alturaFlor - 30;
+                const posHorizontal = Math.floor(Math.random() * (window.innerWidth - 60)) + 20;
+                const colorPetalo = coloresPetalos[Math.floor(Math.random() * coloresPetalos.length)];
+                
+                // Crear elementos
+                const flor = document.createElement('div');
+                flor.className = 'flor';
+                flor.style.cssText = `height: ${alturaFlor}px; left: ${posHorizontal}px;`;
+
+                const tallo = document.createElement('div');
+                tallo.className = 'tallo';
+                tallo.style.height = `${alturaTallo}px`;
+                flor.appendChild(tallo);
+
+                const centro = document.createElement('div');
+                centro.className = 'centro';
+                centro.style.cssText = `bottom: ${alturaTallo}px; left: 19px;`;
+                flor.appendChild(centro);
+
+                for (let p = 1; p <= 5; p++) {
+                    const petalo = document.createElement('div');
+                    petalo.className = `petalo p${p}`;
+                    petalo.style.cssText = `background-color: ${colorPetalo}; bottom: ${alturaTallo + 5}px; left: 17px;`;
+                    flor.appendChild(petalo);
+                }
+
+                jardin.appendChild(flor);
+            }
+            
+            // Generar luciérnagas aleatorias
+            for (let i = 0; i < numLuciernagas; i++) {
+                const posVertical = Math.floor(Math.random() * (window.innerHeight * 0.7)) + 50; // Parte media y alta
+                const posHorizontal = Math.floor(Math.random() * window.innerWidth);
+                const retrasoAnimacion = Math.random() * 5;
+                
+                const luciernaga = document.createElement('div');
+                luciernaga.className = 'luciernaga';
+                luciernaga.style.cssText = `top: ${posVertical}px; left: ${posHorizontal}px; animation-delay: ${retrasoAnimacion}s;`;
+                luciernagas.appendChild(luciernaga);
             }
         }
     </script>
